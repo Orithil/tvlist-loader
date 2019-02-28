@@ -4,8 +4,8 @@ import argparse
 import json
 import sys
 from splinter import Browser
-import schedulebot.xlparser.parser as xlparser
-import schedulebot.webscraper.scraper as scraper
+from tvlist_loader import xlparser
+from tvlist_loader import scraper
 
 
 def main():
@@ -45,3 +45,7 @@ def main():
             scraper.add_program(
                 browser, programs["name"], programs["time"], programs["age"])
         scraper.commit(browser)
+
+
+if __name__ == '__main__':
+    main()
