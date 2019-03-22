@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
+from time import sleep
 
-def login(browser, site):
+
+def login(browser, site, login, password):
     browser.visit(site + 'wp-admin')
-    login = 'friendlybot'
-    password = 'friendlyBot'
     browser.find_by_id('user_login').fill(login)
     browser.find_by_id('user_pass').fill(password)
     browser.find_by_id('wp-submit').first.click()
@@ -19,13 +19,29 @@ def open_schedule(browser, site):
         print('Не удалось обнаружить ссылку на программу передач')
 
 
-def add_day(browser):
+def add_day(browser, day, date):
     browser.find_by_css('a.button[data-event="add-row"]').last.click()
+    field_day = browser.find_by_css(
+        'div[data-name="tv_program_item_title"] input')
+    field_date = browser.find_by_css(
+        'div[data-name="tv_program_item_date"] input')
+    field_day[-2].fill(day)
+    field_date[-3].fill(date)
 
 
-def add_program(browser):
+def add_program(browser, name, time, age):
     browser.find_by_css('a.button[data-event="add-row"]')[-3].click()
+    field_name = browser.find_by_css(
+        'div[data-name="tv_program_item_program_title"] input')
+    field_time = browser.find_by_css(
+        'div[data-name="tv_program_item_program_date"] input')
+    field_age = browser.find_by_css(
+        'div[data-name="tv_program_item_program_age"] input')
+    field_name[-3].fill(name)
+    field_time[-5].fill(time)
+    field_age[-3].fill(age)
 
 
 def commit(browser):
     browser.find_by_id('publish').first.click()
+    sleep(60)

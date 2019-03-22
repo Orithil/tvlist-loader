@@ -1,0 +1,4 @@
+# Excluding input and output files for script
+*.xlsx
+*.log
+*.json
