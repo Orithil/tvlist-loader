@@ -54,8 +54,7 @@ def getProgram(table, id):
         name = row.iat[1]
         time = datetime.strptime(row.iat[0], "%H:%M") if isinstance(
             row.iat[0], str) else row.iat[0].strftime("%H:%M")
-        age = str(int(row.iat[2].strip("+"))
-                  ) if row.iat[2] == row.iat[2] else "0"
+        age = str(row.iat[2]).strip("+") if row.iat[2] == row.iat[2] else "0"
         program["program" + str(program_index)
                 ] = {"name": name, "time": time, "age": age}
     return program

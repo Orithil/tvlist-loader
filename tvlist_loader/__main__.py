@@ -15,6 +15,7 @@ def main():
     parser.add_argument("FILE", help="Файл программы передач в формате Excel")
     parser.add_argument(
         "-s", "--sheet", help="Имя листа с программой передач. По умолчанию 'Лист1'")
+    parser.add_argument("-a", "--auth", help="Файл с адресом сайта, логином и паролем в формате JSON")
     args = vars(parser.parse_args())
 
     # Set sheet to read
@@ -32,18 +33,30 @@ def main():
     with open("schedule.json", "w") as file_json:
         json.dump(week, file_json, indent=4, ensure_ascii=False)
 
+    if args["auth"]:
+        file_client = args["auth"]
+    else:
+        file_client = "client_id.json"
+    try:
+        with open(file_client, "r") as file_json:
+            client = json.load(file_json)
+    except FileNotFoundError:
+        print(f"Не удалось открыть {file_client}. Поместите файл 'client_id.json' в папку запуска программы или укажите другой файл с помощью параметра -a")
+        sys.exit(1)
+    except json.decoder.JSONDecodeError:
+        print(f"Файл {file_client} не является корректным JSON.") 
+        sys.exit(1)
+
     with Browser("firefox") as browser:
-        site = "http://0.0.0.0:8080/"
-        scraper.login(browser, site)
+        site = client['site']
+        scraper.login(browser, site, client['login'], client['password'])
         scraper.open_schedule(browser, site)
 
-        # for days in week.values():
-        #    scraper.add_day(browser, days["day"], days["date"])
-        testday = week["day1"]
-        scraper.add_day(browser, testday["day"], testday["date"])
-        for programs in testday["programs"].values():
-            scraper.add_program(
-                browser, programs["name"], programs["time"], programs["age"])
+        for days in week.values():
+            scraper.add_day(browser, days["day"], days["date"])
+            for programs in days["programs"].values():
+                scraper.add_program(
+                    browser, programs["name"], programs["time"], programs["age"])
         scraper.commit(browser)
 
 

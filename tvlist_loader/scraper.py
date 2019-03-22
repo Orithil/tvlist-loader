@@ -3,10 +3,8 @@
 from time import sleep
 
 
-def login(browser, site):
+def login(browser, site, login, password):
     browser.visit(site + 'wp-admin')
-    login = 'friendlybot'
-    password = 'friendlyBot'
     browser.find_by_id('user_login').fill(login)
     browser.find_by_id('user_pass').fill(password)
     browser.find_by_id('wp-submit').first.click()
