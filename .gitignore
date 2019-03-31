@@ -2,3 +2,6 @@
 *.xlsx
 *.log
 *.json
+dist/*
+build/*
+*.egg-info/*
