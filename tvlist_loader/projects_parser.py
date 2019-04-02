@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-def get_projects(browser, site):
+def getProjects(browser, site):
     """ Gets projects list from site and returns it as a list
     """
     browser.visit(site)
@@ -10,7 +10,7 @@ def get_projects(browser, site):
         projects_list.append(item.html.upper())
     return projects_list
 
-def check_project(name, projects_list):
+def checkProject(name, projects_list):
     """ Checks if entry in tv list is a project instance.
         If entry name is identical to project name returns entry name.
         If some part of entry name matches project name or vice versa
