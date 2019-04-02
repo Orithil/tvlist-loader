@@ -51,10 +51,18 @@ def getProgram(table, id):
     for row_index in range(table.index[0], table.index[-1] + 1):
         row = table.ix[row_index]
         program_index += 1
-        name = row.iat[1]
+        name = fix_quotes(row.iat[1])
         time = datetime.strptime(row.iat[0], "%H:%M") if isinstance(
             row.iat[0], str) else row.iat[0].strftime("%H:%M")
         age = str(row.iat[2]).strip("+") if row.iat[2] == row.iat[2] else "0"
         program["program" + str(program_index)
                 ] = {"name": name, "time": time, "age": age}
     return program
+
+def fix_quotes(name):
+    name = name.strip()
+    name = re.sub(r"""(^[хдмт]/[фс]\s)(.*)([А-Я0-9]$)""", r"""\1«\2\3»""", name)
+    name = re.sub(r"""\s["]""", ' «', name)
+    name = re.sub(r"""["]$""", '»', name)
+    name = re.sub(r"""\s+""", ' ', name)
+    return name
