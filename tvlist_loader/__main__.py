@@ -3,6 +3,8 @@
 import argparse
 import json
 import sys
+from datetime import datetime
+from time import sleep
 from splinter import Browser
 from tvlist_loader import xlparser
 from tvlist_loader import scraper
@@ -39,20 +41,18 @@ def main():
         print(f"Файл {file_client} не является корректным JSON.") 
         sys.exit(1)
 
-    navigator = Browser("firefox")
     site = client['site']
     table = xlparser.getTable(args["FILE"], sheet)
     week = xlparser.getDates(table)
-    with navigator as browser:
+    with Browser("firefox") as browser:
         projects = pp.getProjects(browser, site)
 
-    for day, value in week.items():
-        week[day]["programs"] = xlparser.getProgram(table, value["id"], projects)
+        for day, value in week.items():
+            week[day]["programs"] = xlparser.getProgram(table, value["id"], projects)
 
-    with open("schedule.json", "w") as file_json:
-        json.dump(week, file_json, indent=4, ensure_ascii=False)
+        with open("schedule.json", "w") as file_json:
+            json.dump(week, file_json, indent=4, ensure_ascii=False)
 
-    with navigator as browser:
         scraper.login(browser, site, client['login'], client['password'])
         scraper.open_schedule(browser, site)
 
