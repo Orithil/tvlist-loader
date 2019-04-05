@@ -3,6 +3,7 @@
 import pandas as pd
 import xlrd
 import re
+from tvlist_loader import projects_parser as pp
 from datetime import datetime
 
 
@@ -36,7 +37,7 @@ def getDates(table):
     return days
 
 
-def getProgram(table, id):
+def getProgram(table, id, projects):
     program = {}
     # Program table has three columns: 'time', 'name', and 'age'
     TABLE_WIDTH = 3
@@ -52,12 +53,20 @@ def getProgram(table, id):
         row = table.ix[row_index]
         program_index += 1
         name = fix_quotes(row.iat[1])
+        project = pp.checkProject(name, projects)
+        if project == "1" or project == "2":
+            bproject = False
+            project_name = ""
+        else:
+            bproject = True
+            project_name = project
         time = datetime.strptime(row.iat[0], "%H:%M") if isinstance(
             row.iat[0], str) else row.iat[0].strftime("%H:%M")
         age = str(row.iat[2]).strip("+") if row.iat[2] == row.iat[2] else "0"
         program["program" + str(program_index)
-                ] = {"name": name, "time": time, "age": age}
+                ] = {"name": name, "time": time, "project": bproject, "project_name": project_name, "age": age}
     return program
+
 
 def fix_quotes(name):
     name = name.strip()
