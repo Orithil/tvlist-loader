@@ -6,6 +6,7 @@ import sys
 from splinter import Browser
 from tvlist_loader import xlparser
 from tvlist_loader import scraper
+from tvlist_loader import projects_parser as pp
 
 
 def main():
@@ -24,15 +25,6 @@ def main():
     else:
         sheet = "Лист1"
 
-    table = xlparser.getTable(args["FILE"], sheet)
-    week = xlparser.getDates(table)
-
-    for day, value in week.items():
-        week[day]["programs"] = xlparser.getProgram(table, value["id"])
-
-    with open("schedule.json", "w") as file_json:
-        json.dump(week, file_json, indent=4, ensure_ascii=False)
-
     if args["auth"]:
         file_client = args["auth"]
     else:
@@ -47,8 +39,20 @@ def main():
         print(f"Файл {file_client} не является корректным JSON.") 
         sys.exit(1)
 
-    with Browser("firefox") as browser:
-        site = client['site']
+    navigator = Browser("firefox")
+    site = client['site']
+    table = xlparser.getTable(args["FILE"], sheet)
+    week = xlparser.getDates(table)
+    with navigator as browser:
+        projects = pp.getProjects(browser, site)
+
+    for day, value in week.items():
+        week[day]["programs"] = xlparser.getProgram(table, value["id"], projects)
+
+    with open("schedule.json", "w") as file_json:
+        json.dump(week, file_json, indent=4, ensure_ascii=False)
+
+    with navigator as browser:
         scraper.login(browser, site, client['login'], client['password'])
         scraper.open_schedule(browser, site)
 
