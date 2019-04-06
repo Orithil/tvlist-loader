@@ -70,8 +70,8 @@ def getProgram(table, id, projects):
 
 def fix_quotes(name):
     name = name.strip()
-    name = re.sub(r"""(^[хдмт]/[фс]\s)(.*)([А-Я0-9]$)""", r"""\1«\2\3»""", name)
+    name = re.sub(r"""\s+""", ' ', name)
     name = re.sub(r"""\s["]""", ' «', name)
     name = re.sub(r"""["]$""", '»', name)
-    name = re.sub(r"""\s+""", ' ', name)
+    name = re.sub(r"""(^[хдмт]/[фс]\s)(.*)([А-Я0-9]$)""", r"""\1«\2\3»""", name)
     return name
