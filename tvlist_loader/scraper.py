@@ -52,7 +52,6 @@ def add_link(browser, field, project_name):
     sleep(5)
     results = browser.find_by_css(".select2-results > ul > li")
     for li in results:
-        print(li.html.upper())
         if li.html.upper() == project_name:
             li.click()
 
