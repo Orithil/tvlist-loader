@@ -54,6 +54,7 @@ def add_link(browser, field, project_name):
     for li in results:
         if li.html.upper() == project_name:
             li.click()
+            break
 
 def commit(browser):
     browser.find_by_id('publish').first.click()
