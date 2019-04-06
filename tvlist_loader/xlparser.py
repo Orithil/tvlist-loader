@@ -3,10 +3,11 @@
 import pandas as pd
 import xlrd
 import re
+from tvlist_loader import projects_parser as pp
 from datetime import datetime
 
 
-def getTable(file, sheet):
+def get_table(file, sheet):
     # Read file
     try:
         df = pd.read_excel(file, sheet_name=sheet, header=None, skiprows=[0])
@@ -24,7 +25,7 @@ def getTable(file, sheet):
     return df
 
 
-def getDates(table):
+def get_dates(table):
     # Gets first header with dates and trims empty cells
     days = {}
     i = 0
@@ -36,7 +37,7 @@ def getDates(table):
     return days
 
 
-def getProgram(table, id):
+def get_program(table, id, projects):
     program = {}
     # Program table has three columns: 'time', 'name', and 'age'
     TABLE_WIDTH = 3
@@ -51,10 +52,26 @@ def getProgram(table, id):
     for row_index in range(table.index[0], table.index[-1] + 1):
         row = table.ix[row_index]
         program_index += 1
-        name = row.iat[1]
+        name = fix_quotes(row.iat[1])
+        project = pp.check_project(name, projects)
+        if project == "2":
+            bproject = False
+            project_name = ""
+        else:
+            bproject = True
+            project_name = project
         time = datetime.strptime(row.iat[0], "%H:%M") if isinstance(
             row.iat[0], str) else row.iat[0].strftime("%H:%M")
         age = str(row.iat[2]).strip("+") if row.iat[2] == row.iat[2] else "0"
         program["program" + str(program_index)
-                ] = {"name": name, "time": time, "age": age}
+                ] = {"name": name, "time": time, "project": bproject, "project_name": project_name, "age": age}
     return program
+
+
+def fix_quotes(name):
+    name = name.strip()
+    name = re.sub(r"""\s+""", ' ', name)
+    name = re.sub(r"""\s["]""", ' «', name)
+    name = re.sub(r"""["]$""", '»', name)
+    name = re.sub(r"""(^[хдмт]/[фс]\s)(.*)([А-Я0-9]$)""", r"""\1«\2\3»""", name)
+    return name

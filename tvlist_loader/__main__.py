@@ -3,9 +3,12 @@
 import argparse
 import json
 import sys
+from datetime import datetime
+from time import sleep
 from splinter import Browser
 from tvlist_loader import xlparser
 from tvlist_loader import scraper
+from tvlist_loader import projects_parser as pp
 
 
 def main():
@@ -24,15 +27,6 @@ def main():
     else:
         sheet = "Лист1"
 
-    table = xlparser.getTable(args["FILE"], sheet)
-    week = xlparser.getDates(table)
-
-    for day, value in week.items():
-        week[day]["programs"] = xlparser.getProgram(table, value["id"])
-
-    with open("schedule.json", "w") as file_json:
-        json.dump(week, file_json, indent=4, ensure_ascii=False)
-
     if args["auth"]:
         file_client = args["auth"]
     else:
@@ -47,8 +41,18 @@ def main():
         print(f"Файл {file_client} не является корректным JSON.") 
         sys.exit(1)
 
+    site = client['site']
+    table = xlparser.get_table(args["FILE"], sheet)
+    week = xlparser.get_dates(table)
     with Browser("firefox") as browser:
-        site = client['site']
+        projects = pp.get_projects(browser, site)
+
+        for day, value in week.items():
+            week[day]["programs"] = xlparser.get_program(table, value["id"], projects)
+
+        with open("schedule.json", "w") as file_json:
+            json.dump(week, file_json, indent=4, ensure_ascii=False)
+
         scraper.login(browser, site, client['login'], client['password'])
         scraper.open_schedule(browser, site)
 
@@ -56,7 +60,7 @@ def main():
             scraper.add_day(browser, days["day"], days["date"])
             for programs in days["programs"].values():
                 scraper.add_program(
-                    browser, programs["name"], programs["time"], programs["age"])
+                    browser, programs["name"], programs["time"], programs["age"], programs["project"], programs["project_name"])
         scraper.commit(browser)
 
 
