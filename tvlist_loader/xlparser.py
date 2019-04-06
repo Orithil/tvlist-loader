@@ -7,7 +7,7 @@ from tvlist_loader import projects_parser as pp
 from datetime import datetime
 
 
-def getTable(file, sheet):
+def get_table(file, sheet):
     # Read file
     try:
         df = pd.read_excel(file, sheet_name=sheet, header=None, skiprows=[0])
@@ -25,7 +25,7 @@ def getTable(file, sheet):
     return df
 
 
-def getDates(table):
+def get_dates(table):
     # Gets first header with dates and trims empty cells
     days = {}
     i = 0
@@ -37,7 +37,7 @@ def getDates(table):
     return days
 
 
-def getProgram(table, id, projects):
+def get_program(table, id, projects):
     program = {}
     # Program table has three columns: 'time', 'name', and 'age'
     TABLE_WIDTH = 3
@@ -53,8 +53,8 @@ def getProgram(table, id, projects):
         row = table.ix[row_index]
         program_index += 1
         name = fix_quotes(row.iat[1])
-        project = pp.checkProject(name, projects)
-        if project == "1" or project == "2":
+        project = pp.check_project(name, projects)
+        if project == "2":
             bproject = False
             project_name = ""
         else:

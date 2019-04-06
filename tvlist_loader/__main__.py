@@ -42,13 +42,13 @@ def main():
         sys.exit(1)
 
     site = client['site']
-    table = xlparser.getTable(args["FILE"], sheet)
-    week = xlparser.getDates(table)
+    table = xlparser.get_table(args["FILE"], sheet)
+    week = xlparser.get_dates(table)
     with Browser("firefox") as browser:
-        projects = pp.getProjects(browser, site)
+        projects = pp.get_projects(browser, site)
 
         for day, value in week.items():
-            week[day]["programs"] = xlparser.getProgram(table, value["id"], projects)
+            week[day]["programs"] = xlparser.get_program(table, value["id"], projects)
 
         with open("schedule.json", "w") as file_json:
             json.dump(week, file_json, indent=4, ensure_ascii=False)
