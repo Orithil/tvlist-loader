@@ -23,5 +23,5 @@ def check_project(name, projects_list):
     else:
         for project in projects_list:
             if name in project or project in name:
-                return '1'
+                return name
         return '2'
