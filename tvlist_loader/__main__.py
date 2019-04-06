@@ -60,7 +60,7 @@ def main():
             scraper.add_day(browser, days["day"], days["date"])
             for programs in days["programs"].values():
                 scraper.add_program(
-                    browser, programs["name"], programs["time"], programs["age"])
+                    browser, programs["name"], programs["time"], programs["age"], programs["project"], programs["project_name"])
         scraper.commit(browser)
 
 
