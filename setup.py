@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="tvlist-loader-orithil",
-    version="0.2",
+    version="0.2.1",
     author="Orithil",
     author_email="orithil@protonmail.com",
     description="Script ot upload tvlist on target site.",
