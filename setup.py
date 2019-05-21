@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/Orithil/tvlist-loader",
     packages=setuptools.find_packages(),
-    install_requires=["pandas", "splinter"],
+    install_requires=["pandas", "xlrd", "splinter"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
