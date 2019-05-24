@@ -19,6 +19,7 @@ def main():
     parser.add_argument(
         "-s", "--sheet", help="Имя листа с программой передач. По умолчанию 'Лист1'")
     parser.add_argument("-a", "--auth", help="Файл с адресом сайта, логином и паролем в формате JSON")
+    parser.add_argument("-b", "--browser", help="Браузер, который будет использоваться для открывания ссылок. Доступные значения 'firefox' (по умолчанию), 'chrome'.")
     args = vars(parser.parse_args())
 
     # Set sheet to read
@@ -41,10 +42,15 @@ def main():
         print(f"Файл {file_client} не является корректным JSON.") 
         sys.exit(1)
 
+    if args["browser"] == "firefox" or args["browser"] == "chrome":
+        browse_with = args["browser"]
+    else:
+        browse_with = "firefox"
+
     site = client['site']
     table = xlparser.get_table(args["FILE"], sheet)
     week = xlparser.get_dates(table)
-    with Browser("firefox") as browser:
+    with Browser(browse_with) as browser:
         projects = pp.get_projects(browser, site)
 
         for day, value in week.items():
