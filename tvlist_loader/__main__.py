@@ -20,6 +20,7 @@ def main():
         "-s", "--sheet", help="Имя листа с программой передач. По умолчанию 'Лист1'")
     parser.add_argument("-a", "--auth", help="Файл с адресом сайта, логином и паролем в формате JSON")
     parser.add_argument("-b", "--browser", help="Браузер, который будет использоваться для открывания ссылок. Доступные значения 'firefox' (по умолчанию), 'chrome'.")
+    parser.add_argument("-H", "--headless", action="store_true", default=False, help="Запустить браузер без графического интерфейса.")
     args = vars(parser.parse_args())
 
     # Set sheet to read
@@ -50,7 +51,7 @@ def main():
     site = client['site']
     table = xlparser.get_table(args["FILE"], sheet)
     week = xlparser.get_dates(table)
-    with Browser(browse_with) as browser:
+    with Browser(browse_with, headless=args["headless"]) as browser:
         projects = pp.get_projects(browser, site)
 
         for day, value in week.items():
