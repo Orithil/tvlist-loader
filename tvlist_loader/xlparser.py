@@ -18,7 +18,7 @@ def get_table(file, sheet):
         sys.exit(f"Не удалось найти лист \"{sheet}\"")
 
     # Replace empty strings that might oocure in some cells with Nan values
-    df.replace(r"^ +", pd.np.nan, regex=True, inplace=True)
+    df.replace(r"^ +$", pd.np.nan, regex=True, inplace=True)
     # Trim rows and columns that consist of Nan values only
     df.dropna(axis=0, how="all", inplace=True)
     df.dropna(axis=1, how="all", inplace=True)
