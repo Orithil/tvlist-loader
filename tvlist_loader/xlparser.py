@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import pandas as pd
 import xlrd
 import re
@@ -17,7 +18,7 @@ def get_table(file, sheet):
         sys.exit(f"Не удалось найти лист \"{sheet}\"")
 
     # Replace empty strings that might oocure in some cells with Nan values
-    df.replace(r"^ +", pd.np.nan, regex=True, inplace=True)
+    df.replace(r"^ +$", pd.np.nan, regex=True, inplace=True)
     # Trim rows and columns that consist of Nan values only
     df.dropna(axis=0, how="all", inplace=True)
     df.dropna(axis=1, how="all", inplace=True)
@@ -69,9 +70,12 @@ def get_program(table, id, projects):
 
 
 def fix_quotes(name):
+    name = str(name)
+    name = re.sub(r"""(\.)([А-Я0-9])""", r""". \2""", name)
     name = name.strip()
     name = re.sub(r"""\s+""", ' ', name)
     name = re.sub(r"""\s["]""", ' «', name)
     name = re.sub(r"""["]$""", '»', name)
-    name = re.sub(r"""(^[хдмт]/[фс]\s)(.*)([А-Я0-9]$)""", r"""\1«\2\3»""", name)
+    name = re.sub(r"""(^[хдмт])(\\)([фс]\s)""", r"""\1/\3""", name)
+    name = re.sub(r"""(^[хдмт]/[фс]\s)(.*$)""", r"""\1«\2»""", name)
     return name

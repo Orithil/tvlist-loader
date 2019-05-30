@@ -19,6 +19,8 @@ def main():
     parser.add_argument(
         "-s", "--sheet", help="Имя листа с программой передач. По умолчанию 'Лист1'")
     parser.add_argument("-a", "--auth", help="Файл с адресом сайта, логином и паролем в формате JSON")
+    parser.add_argument("-b", "--browser", help="Браузер, который будет использоваться для открывания ссылок. Доступные значения 'firefox' (по умолчанию), 'chrome'.")
+    parser.add_argument("-H", "--headless", action="store_true", default=False, help="Запустить браузер без графического интерфейса.")
     args = vars(parser.parse_args())
 
     # Set sheet to read
@@ -41,16 +43,21 @@ def main():
         print(f"Файл {file_client} не является корректным JSON.") 
         sys.exit(1)
 
+    if args["browser"] == "firefox" or args["browser"] == "chrome":
+        browse_with = args["browser"]
+    else:
+        browse_with = "firefox"
+
     site = client['site']
     table = xlparser.get_table(args["FILE"], sheet)
     week = xlparser.get_dates(table)
-    with Browser("firefox") as browser:
+    with Browser(browse_with, headless=args["headless"]) as browser:
         projects = pp.get_projects(browser, site)
 
         for day, value in week.items():
             week[day]["programs"] = xlparser.get_program(table, value["id"], projects)
 
-        with open("schedule.json", "w") as file_json:
+        with open("schedule.json", "w", encoding="utf-8") as file_json:
             json.dump(week, file_json, indent=4, ensure_ascii=False)
 
         scraper.login(browser, site, client['login'], client['password'])
