@@ -57,7 +57,7 @@ def main():
         for day, value in week.items():
             week[day]["programs"] = xlparser.get_program(table, value["id"], projects)
 
-        with open("schedule.json", "w") as file_json:
+        with open("schedule.json", "w", encoding="utf-8") as file_json:
             json.dump(week, file_json, indent=4, ensure_ascii=False)
 
         scraper.login(browser, site, client['login'], client['password'])
