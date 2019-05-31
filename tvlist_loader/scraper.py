@@ -49,7 +49,7 @@ def add_link(browser, field, project_name):
     field.click()
     field_input = browser.find_by_css(".select2-search__field")
     field_input.fill(project_name)
-    sleep(5)
+    sleep(10)
     results = browser.find_by_css(".select2-results > ul > li")
     for li in results:
         if li.html.upper() == project_name:
@@ -58,4 +58,4 @@ def add_link(browser, field, project_name):
 
 def commit(browser):
     browser.find_by_id('publish').first.click()
-    sleep(60)
+    sleep(90)
