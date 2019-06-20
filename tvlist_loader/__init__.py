@@ -2,4 +2,4 @@
 
 # Version of the irystontv-tvlist-loader package
 name = "tvlist_loader"
-__version__ = "0.3.1"
+__version__ = "0.3.2"

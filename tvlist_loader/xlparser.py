@@ -77,5 +77,5 @@ def fix_quotes(name):
     name = re.sub(r"""\s["]""", ' «', name)
     name = re.sub(r"""["]$""", '»', name)
     name = re.sub(r"""(^[хдмт])(\\)([фс]\s)""", r"""\1/\3""", name)
-    name = re.sub(r"""(^[хдмт]/[фс]\s)(.*$)""", r"""\1«\2»""", name)
+    name = re.sub(r"""(^[хдмт]/[фс]\s)(.*)([^»]$)""", r"""\1«\2»""", name)
     return name
